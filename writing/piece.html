@@ -29,6 +29,10 @@
           <h1 class="piece-title" id="pieceTitle"></h1>
           <p class="piece-subtitle" id="pieceSubtitle"></p>
           <div class="piece-meta" id="pieceMeta"></div>
+          <div class="piece-actions">
+            <button class="share-link-btn" id="shareLinkBtn" type="button">Copy Link</button>
+            <span class="share-feedback" id="shareFeedback" role="status" aria-live="polite">Link copied</span>
+          </div>
         </header>
 
         <div class="piece-body" id="pieceBody">
@@ -52,6 +56,9 @@
       var pieceSlug = params.get('piece');
       var header = document.getElementById('pieceHeader');
       var body = document.getElementById('pieceBody');
+      var shareLinkBtn = document.getElementById('shareLinkBtn');
+      var shareFeedback = document.getElementById('shareFeedback');
+      var canonicalShareUrl = '';
 
       if (!pieceSlug) {
         window.location.href = './';
@@ -74,6 +81,7 @@
           }
 
           renderPieceMeta(item);
+          setCanonicalShareUrl(item.slug);
           return fetch(item.file).then(function (r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.text();
@@ -87,6 +95,12 @@
           console.error('Failed to load piece:', err);
           showError('Could not load piece', 'Please return to the writing archive.');
         });
+
+      if (shareLinkBtn) {
+        shareLinkBtn.addEventListener('click', function () {
+          copyShareLink();
+        });
+      }
 
       function renderPieceMeta(item) {
         document.title = (item.title || 'Writing') + ' | Ivy Productions';
@@ -120,6 +134,60 @@
         }
 
         header.hidden = false;
+      }
+
+      function setCanonicalShareUrl(slug) {
+        var cleanPath = window.location.pathname.replace(/\/[^/]*$/, '/piece.html');
+        canonicalShareUrl = window.location.origin + cleanPath + '?piece=' + encodeURIComponent(slug);
+
+        window.history.replaceState({}, '', cleanPath + '?piece=' + encodeURIComponent(slug));
+
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = canonicalShareUrl;
+      }
+
+      function copyShareLink() {
+        var url = canonicalShareUrl || window.location.href;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(showShareFeedback).catch(function () {
+            fallbackCopy(url);
+          });
+          return;
+        }
+
+        fallbackCopy(url);
+      }
+
+      function fallbackCopy(url) {
+        var input = document.createElement('textarea');
+        input.value = url;
+        input.setAttribute('readonly', '');
+        input.style.position = 'fixed';
+        input.style.top = '-999px';
+        document.body.appendChild(input);
+        input.select();
+        try {
+          document.execCommand('copy');
+          showShareFeedback();
+        } catch (err) {
+          console.error('Copy failed:', err);
+        }
+        document.body.removeChild(input);
+      }
+
+      function showShareFeedback() {
+        if (!shareFeedback) return;
+        shareFeedback.classList.add('visible');
+        window.clearTimeout(showShareFeedback.timer);
+        showShareFeedback.timer = window.setTimeout(function () {
+          shareFeedback.classList.remove('visible');
+        }, 1500);
       }
 
       function markdownToHtml(markdown) {
