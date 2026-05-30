@@ -12,6 +12,8 @@
 </head>
 <body data-screen-label="Writing — Archive" data-density="cozy" data-title-font="metamorphous" data-ornament="default">
 
+<img class="writing-watermark" src="../assets/site-images/gothic-window-watermark.svg" alt="" aria-hidden="true">
+
 <nav class="mainnav" aria-label="Ivy main">
   <div class="mainnav-inner">
     <a class="brand-wordmark" href="../index.html" aria-label="Ivy — home">
@@ -33,6 +35,9 @@
   </a>
   <div class="nav">
     <a href="index.html" class="current">Archive</a>
+    <a href="#commissions">Commissions</a>
+    <a href="#vault">Vault</a>
+    <a href="stats.html">Stats</a>
   </div>
 </nav>
 
@@ -42,19 +47,119 @@
   <div class="writing-masthead">
     <div class="eyebrow">Literary Practice</div>
     <h1 class="display" style="margin-top:18px;">Writing</h1>
+    <img class="ivy subtle" src="../assets/site-images/ivy-ornament.png" alt="" aria-hidden="true">
     <p class="dek">Essays, short fiction, and shorter strangeness — a working archive.</p>
   </div>
 
-  <div class="filter-row" id="archiveFilters">
-    <span class="filter-label">Filter</span>
-    <button class="filter-btn active" data-filter="all">All</button>
+  <div class="filter-box">
+    <div class="filter-row" id="archiveFilters">
+      <span class="filter-label">Format</span>
+      <div class="opts" id="formatFilters">
+        <button class="filter-chip active" type="button" data-filter="all">All <span class="count" id="allCount">0</span></button>
+      </div>
+    </div>
+    <div class="filter-row filter-row--tags">
+      <span class="filter-label">Tags</span>
+      <div class="opts opts--tight" id="tagFilters"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Sort</span>
+      <div class="filter-sort">
+        <select aria-label="Sort entries" id="sortSelect">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="title">Title (A–Z)</option>
+          <option value="tagged">Most-tagged</option>
+        </select>
+      </div>
+      <span class="filter-meta" id="archiveCount">Loading pieces...</span>
+    </div>
   </div>
 
-  <div class="archive-count" id="archiveCount">Loading pieces...</div>
-  <section class="archive-list" id="writingGrid" aria-live="polite"></section>
+  <div class="archive" id="writingGrid" aria-live="polite"></div>
   <div class="empty-state" id="emptyState" hidden>No pieces match that filter.</div>
 
-  <div class="footer-line">Ivy · Writing Archive</div>
+  <div class="archive-foot">
+    ✦ load older entries ✦
+  </div>
+
+  <div class="bsky" id="bluesky">
+    <h3>From Bluesky · Recent status</h3>
+    <div class="bsky-stub">
+      <strong>[ Bluesky feed embed mounts here ]</strong>
+      <p>recent statuses, 3–5 deep, with a fade at the bottom to a "more on bluesky →" link.<br>handle: <code style="font-family:inherit;color:var(--gold-deeper);">@ivy.bsky.social</code></p>
+    </div>
+  </div>
+
+  <div class="vault-card" id="vault">
+    <div class="vault-eyebrow">The Vault · Members only</div>
+    <h2>Longer work, behind the door.</h2>
+    <p>Serialized fiction, members-only essays, and the working drafts. Subscribers and supporters sign in from the linked site to read.</p>
+    <a class="return right" href="#">Enter the vault</a>
+  </div>
+
+  <div class="divider" id="commissions" style="margin:32px auto 28px;">
+    <span class="line"></span>
+    <span class="glyph">Commissions</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="commissions">
+    <div class="panel">
+      <h4>Essay &amp; Criticism</h4>
+      <p>Commissioned essays, criticism, and longform reviews — culture, craft, somatic practice, the dark academia adjacent. Original to your publication.</p>
+      <div class="commission-rate"><strong>From $0.40/word</strong> · 1,500–4,000 words</div>
+      <span class="glint"></span>
+    </div>
+    <div class="panel">
+      <h4>Brand &amp; Voice</h4>
+      <p>Voice work for brands and small businesses whose audience overlaps with mine. Manifestos, About pages, product copy that doesn't apologize for being literary.</p>
+      <div class="commission-rate"><strong>Project quote</strong> · half-day to two-week scopes</div>
+      <span class="glint"></span>
+    </div>
+    <div class="panel">
+      <h4>Ritual &amp; Liturgy</h4>
+      <p>Bespoke ceremony — wedding rites, eulogies, dedications, opening invocations. Researched, drafted, refined with you, and delivered as both text and read-aloud audio.</p>
+      <div class="commission-rate"><strong>From $480</strong> · 4-week lead time typical</div>
+      <span class="glint"></span>
+    </div>
+    <div class="panel">
+      <h4>Private Tutoring</h4>
+      <p>Editorial mentorship for working writers and serious students — manuscript notes, weekly correspondence, the kind of patient reading that's hard to find.</p>
+      <div class="commission-rate"><strong>From $180/hr</strong> · monthly retainer preferred</div>
+      <span class="glint"></span>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin:24px 0 56px;">
+    <a class="return right" href="#">Begin a commission</a>
+  </div>
+
+  <div class="related-strip">
+    <div class="related-eyebrow">— If this resonates, try —</div>
+    <div class="related-cards">
+      <a class="related-card" href="#">
+        <div class="related-section">Yoga</div>
+        <div class="related-title">[ class or sequence aligned with these tags ]</div>
+        <div class="related-tag">somatic</div>
+      </a>
+      <a class="related-card" href="#">
+        <div class="related-section">Shop</div>
+        <div class="related-title">[ good or access pass thematically linked ]</div>
+        <div class="related-tag">craft</div>
+      </a>
+      <a class="related-card" href="#">
+        <div class="related-section">Web Work</div>
+        <div class="related-title">[ case study with adjacent subject matter ]</div>
+        <div class="related-tag">devotion</div>
+      </a>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;">
+    <img class="ivy ft flip" src="../assets/site-images/ivy-ornament.png" alt="" aria-hidden="true">
+    <div class="footer-line">Ivy · Writing Archive</div>
+  </div>
 
 </div>
 </div>
@@ -64,11 +169,15 @@
   'use strict';
 
   var manifest = [];
-  var activeFilter = 'all';
+  var activeType = getUrlParam('type') || 'all';
+  var activeTag = getUrlParam('tag') || '';
   var grid = document.getElementById('writingGrid');
-  var filters = document.getElementById('archiveFilters');
+  var formatFilters = document.getElementById('formatFilters');
+  var tagFilters = document.getElementById('tagFilters');
   var count = document.getElementById('archiveCount');
   var emptyState = document.getElementById('emptyState');
+  var sortSelect = document.getElementById('sortSelect');
+  var allCount = document.getElementById('allCount');
 
   fetch('data/writing-manifest.json')
     .then(function (r) {
@@ -76,14 +185,7 @@
       return r.json();
     })
     .then(function (data) {
-      manifest = data
-        .filter(function (item) { return item.status === 'published'; })
-        .sort(function (a, b) {
-          var sortDiff = (a.sort || 999) - (b.sort || 999);
-          if (sortDiff !== 0) return sortDiff;
-          return (b.date || '').localeCompare(a.date || '');
-        });
-
+      manifest = data.filter(function (item) { return item.status === 'published'; });
       buildFilters(manifest);
       renderArchive();
     })
@@ -92,51 +194,126 @@
       count.textContent = 'Could not load pieces.';
     });
 
-  function buildFilters(items) {
-    var types = Array.from(new Set(items.map(function (item) { return item.type; }).filter(Boolean)));
+  if (sortSelect) sortSelect.addEventListener('change', renderArchive);
 
+  function buildFilters(items) {
+    allCount.textContent = items.length;
+
+    var types = Array.from(new Set(items.map(function (item) { return item.type; }).filter(Boolean)));
     types.forEach(function (type) {
       var button = document.createElement('button');
-      button.className = 'filter-btn';
+      button.className = 'filter-chip';
+      button.type = 'button';
       button.dataset.filter = type;
-      button.textContent = formatLabel(type);
-      filters.appendChild(button);
+      button.innerHTML = escapeHtml(formatLabel(type)) + ' <span class="count">' + countByType(type) + '</span>';
+      formatFilters.appendChild(button);
     });
 
-    filters.addEventListener('click', function (event) {
-      var button = event.target.closest('.filter-btn');
+    var tags = Array.from(new Set(items.flatMap(function (item) { return item.tags || []; }))).slice(0, 8);
+    tags.forEach(function (tag) {
+      var button = document.createElement('button');
+      button.className = 'filter-chip filter-chip--tag';
+      button.type = 'button';
+      button.dataset.tag = tag;
+      button.textContent = '#' + tag;
+      tagFilters.appendChild(button);
+    });
+
+    var overflow = document.createElement('a');
+    overflow.className = 'tag-overflow';
+    overflow.href = 'stats.html';
+    overflow.textContent = 'all tags & weights →';
+    tagFilters.appendChild(overflow);
+
+    formatFilters.addEventListener('click', function (event) {
+      var button = event.target.closest('.filter-chip');
       if (!button) return;
-      activeFilter = button.dataset.filter;
-      filters.querySelectorAll('.filter-btn').forEach(function (btn) {
-        btn.classList.toggle('active', btn === button);
-      });
+      activeType = button.dataset.filter;
+      setUrlParams();
+      renderArchive();
+    });
+
+    tagFilters.addEventListener('click', function (event) {
+      var button = event.target.closest('.filter-chip--tag');
+      if (!button) return;
+      activeTag = activeTag === button.dataset.tag ? '' : button.dataset.tag;
+      setUrlParams();
       renderArchive();
     });
   }
 
   function renderArchive() {
-    var visible = activeFilter === 'all'
-      ? manifest
-      : manifest.filter(function (item) { return item.type === activeFilter; });
+    var visible = manifest.slice();
+
+    if (activeType && activeType !== 'all') {
+      visible = visible.filter(function (item) { return item.type === activeType; });
+    }
+    if (activeTag) {
+      visible = visible.filter(function (item) { return item.tags && item.tags.indexOf(activeTag) !== -1; });
+    }
+
+    visible.sort(sortEntries);
+
+    formatFilters.querySelectorAll('.filter-chip').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.filter === activeType);
+    });
+    tagFilters.querySelectorAll('.filter-chip--tag').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.tag === activeTag);
+    });
 
     grid.innerHTML = '';
     visible.forEach(function (item) {
       var card = document.createElement('a');
-      card.className = 'entry-card';
+      card.className = 'entry';
       card.href = 'piece.html?piece=' + encodeURIComponent(item.slug);
       card.innerHTML =
         '<div class="entry-meta">' +
-          '<span>' + escapeHtml(item.type || '') + '</span>' +
+          '<span class="format">' + escapeHtml(formatLabel(item.type || 'Writing')) + '</span>' +
           (item.date ? '<span>' + escapeHtml(formatDate(item.date)) + '</span>' : '') +
+          (item.wordCount ? '<span class="dot"></span><span>~ ' + escapeHtml(item.wordCount) + ' words</span>' : '') +
+          (item.readingTime ? '<span class="dot"></span><span>~ ' + escapeHtml(item.readingTime) + ' min</span>' : '') +
         '</div>' +
         '<h2 class="entry-title">' + escapeHtml(item.title || '') + '</h2>' +
         '<p class="entry-excerpt">' + escapeHtml(item.excerpt || '') + '</p>' +
-        (item.tags && item.tags.length ? '<div class="entry-tags">' + escapeHtml(item.tags.join(' · ')) + '</div>' : '');
+        renderTags(item.tags || []);
       grid.appendChild(card);
     });
 
-    count.textContent = visible.length + ' of ' + manifest.length + ' pieces';
+    count.textContent = visible.length + ' of ' + manifest.length + ' · writing-manifest.json';
     emptyState.hidden = visible.length !== 0;
+  }
+
+  function renderTags(tags) {
+    if (!tags.length) return '';
+    return '<div class="entry-tags">' + tags.map(function (tag) {
+      return '<span class="entry-tag">' + escapeHtml(tag) + '</span>';
+    }).join('') + '</div>';
+  }
+
+  function sortEntries(a, b) {
+    var mode = sortSelect ? sortSelect.value : 'newest';
+    if (mode === 'oldest') return (a.date || '').localeCompare(b.date || '');
+    if (mode === 'title') return (a.title || '').localeCompare(b.title || '');
+    if (mode === 'tagged') return ((b.tags || []).length - (a.tags || []).length);
+    var sortDiff = (a.sort || 999) - (b.sort || 999);
+    if (sortDiff !== 0) return sortDiff;
+    return (b.date || '').localeCompare(a.date || '');
+  }
+
+  function countByType(type) {
+    return manifest.filter(function (item) { return item.type === type; }).length;
+  }
+
+  function setUrlParams() {
+    var params = new URLSearchParams();
+    if (activeType && activeType !== 'all') params.set('type', activeType);
+    if (activeTag) params.set('tag', activeTag);
+    var next = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', next);
+  }
+
+  function getUrlParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
   }
 
   function formatDate(dateString) {
