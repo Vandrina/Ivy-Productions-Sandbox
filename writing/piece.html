@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#151316">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing | Ivy Productions</title>
+  <meta name="description" content="A writing piece from Ivy Productions.">
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/writing.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Ivy Productions home">
+        <span class="brand-title">Ivy Productions</span>
+        <span class="brand-subtitle">Writing · Creative Archive · Experiments</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="./">Writing</a>
+      </nav>
+    </header>
+
+    <main>
+      <article class="piece-shell" id="pieceShell">
+        <a class="back-link" href="./">← Back to Writing Archive</a>
+
+        <header class="piece-header" id="pieceHeader" hidden>
+          <div class="piece-type" id="pieceType"></div>
+          <h1 class="piece-title" id="pieceTitle"></h1>
+          <p class="piece-subtitle" id="pieceSubtitle"></p>
+          <div class="piece-meta" id="pieceMeta"></div>
+          <div class="piece-actions">
+            <button class="share-link-btn" id="shareLinkBtn" type="button">Copy Link</button>
+            <span class="share-feedback" id="shareFeedback" role="status" aria-live="polite">Link copied</span>
+          </div>
+        </header>
+
+        <div class="piece-body" id="pieceBody">
+          <p class="loading-state">Loading...</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© Ivy Productions</span>
+      <span class="footer-dot">·</span>
+      <a href="./">Writing Archive</a>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var params = new URLSearchParams(window.location.search);
+      var pieceSlug = params.get('piece');
+      var header = document.getElementById('pieceHeader');
+      var body = document.getElementById('pieceBody');
+      var shareLinkBtn = document.getElementById('shareLinkBtn');
+      var shareFeedback = document.getElementById('shareFeedback');
+      var canonicalShareUrl = '';
+
+      if (!pieceSlug) {
+        window.location.href = './';
+        return;
+      }
+
+      fetch('../data/writing-manifest.json')
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (manifest) {
+          var item = manifest.find(function (entry) {
+            return entry.slug === pieceSlug;
+          });
+
+          if (!item) {
+            showError('Piece not found', 'The requested writing could not be located.');
+            return null;
+          }
+
+          renderPieceMeta(item);
+          setCanonicalShareUrl(item.slug);
+          return fetch(item.file).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text();
+          });
+        })
+        .then(function (markdown) {
+          if (markdown === null || typeof markdown === 'undefined') return;
+          body.innerHTML = markdownToHtml(markdown);
+        })
+        .catch(function (err) {
+          console.error('Failed to load piece:', err);
+          showError('Could not load piece', 'Please return to the writing archive.');
+        });
+
+      if (shareLinkBtn) {
+        shareLinkBtn.addEventListener('click', function () {
+          copyShareLink();
+        });
+      }
+
+      function renderPieceMeta(item) {
+        document.title = (item.title || 'Writing') + ' | Ivy Productions';
+
+        document.getElementById('pieceTitle').textContent = item.title || '';
+        document.getElementById('pieceSubtitle').textContent = item.subtitle || '';
+        document.getElementById('pieceType').textContent = item.type || '';
+
+        var meta = document.getElementById('pieceMeta');
+        meta.innerHTML = '';
+
+        if (item.date) {
+          var date = document.createElement('span');
+          date.className = 'piece-date';
+          date.textContent = formatDate(item.date);
+          meta.appendChild(date);
+        }
+
+        if (item.tags && item.tags.length) {
+          var tags = document.createElement('span');
+          tags.className = 'piece-tags';
+          tags.textContent = item.tags.map(formatLabel).join(' · ');
+          meta.appendChild(tags);
+        }
+
+        if (item.contentWarnings && item.contentWarnings.length) {
+          var warning = document.createElement('div');
+          warning.className = 'content-warning';
+          warning.textContent = 'Content warning: ' + item.contentWarnings.join(', ');
+          meta.appendChild(warning);
+        }
+
+        header.hidden = false;
+      }
+
+      function setCanonicalShareUrl(slug) {
+        var cleanPath = window.location.pathname.replace(/\/[^/]*$/, '/piece.html');
+        canonicalShareUrl = window.location.origin + cleanPath + '?piece=' + encodeURIComponent(slug);
+
+        window.history.replaceState({}, '', cleanPath + '?piece=' + encodeURIComponent(slug));
+
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = canonicalShareUrl;
+      }
+
+      function copyShareLink() {
+        var url = canonicalShareUrl || window.location.href;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(showShareFeedback).catch(function () {
+            fallbackCopy(url);
+          });
+          return;
+        }
+
+        fallbackCopy(url);
+      }
+
+      function fallbackCopy(url) {
+        var input = document.createElement('textarea');
+        input.value = url;
+        input.setAttribute('readonly', '');
+        input.style.position = 'fixed';
+        input.style.top = '-999px';
+        document.body.appendChild(input);
+        input.select();
+        try {
+          document.execCommand('copy');
+          showShareFeedback();
+        } catch (err) {
+          console.error('Copy failed:', err);
+        }
+        document.body.removeChild(input);
+      }
+
+      function showShareFeedback() {
+        if (!shareFeedback) return;
+        shareFeedback.classList.add('visible');
+        window.clearTimeout(showShareFeedback.timer);
+        showShareFeedback.timer = window.setTimeout(function () {
+          shareFeedback.classList.remove('visible');
+        }, 1500);
+      }
+
+      function markdownToHtml(markdown) {
+        var text = markdown.replace(/\r\n/g, '\n').trim();
+        if (!text) return '';
+
+        var blocks = text.split(/\n{2,}/);
+        return blocks.map(function (block) {
+          var clean = block.trim();
+
+          if (/^---+$/.test(clean)) return '<hr>';
+          if (/^###\s+/.test(clean)) return '<h3>' + inlineMarkdown(clean.replace(/^###\s+/, '')) + '</h3>';
+          if (/^##\s+/.test(clean)) return '<h2>' + inlineMarkdown(clean.replace(/^##\s+/, '')) + '</h2>';
+          if (/^#\s+/.test(clean)) return '<h2>' + inlineMarkdown(clean.replace(/^#\s+/, '')) + '</h2>';
+          if (/^>\s?/.test(clean)) {
+            return '<blockquote>' + inlineMarkdown(clean.replace(/^>\s?/gm, '').replace(/\n/g, '<br>')) + '</blockquote>';
+          }
+          if (/^[-*]\s+/m.test(clean)) {
+            var items = clean.split('\n').map(function (line) {
+              return line.replace(/^[-*]\s+/, '').trim();
+            }).filter(Boolean).map(function (line) {
+              return '<li>' + inlineMarkdown(line) + '</li>';
+            }).join('');
+            return '<ul>' + items + '</ul>';
+          }
+
+          return '<p>' + inlineMarkdown(clean).replace(/\n/g, '<br>') + '</p>';
+        }).join('\n');
+      }
+
+      function inlineMarkdown(value) {
+        return escapeHtml(value)
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+      }
+
+      function showError(title, desc) {
+        header.hidden = true;
+        body.innerHTML = '<div class="error-state"><h2>' + escapeHtml(title) + '</h2><p>' + escapeHtml(desc) + '</p><p><a class="btn btn-primary" href="./">Return to archive</a></p></div>';
+      }
+
+      function formatDate(dateString) {
+        var date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      function formatLabel(value) {
+        return String(value).split('-').map(function (word) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }).join(' ');
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+    })();
+  </script>
+</body>
+</html>

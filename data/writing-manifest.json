@@ -1,0 +1,41 @@
+[
+  {
+    "slug": "usefulness",
+    "title": "Usefulness",
+    "subtitle": "Being useful does not define value.",
+    "file": "pieces/usefulness.md",
+    "type": "snippet",
+    "status": "published",
+    "date": "2026-02-27",
+    "tags": ["submission", "self-worth", "service"],
+    "contentWarnings": [],
+    "excerpt": "Being useful does not define value. For submissives who find joy in serving and Doms or Daddies who find joy in providing, usefulness is easily mistaken for worth.",
+    "sort": 10
+  },
+  {
+    "slug": "presence",
+    "title": "Presence",
+    "subtitle": "Sometimes, being present is the hardest thing.",
+    "file": "pieces/presence.md",
+    "type": "reflection",
+    "status": "published",
+    "date": "2026-04-18",
+    "tags": ["presence", "timing", "vulnerability"],
+    "contentWarnings": [],
+    "excerpt": "Sometimes someone comes into your life who seems to offer you everything you want, everything you need.",
+    "sort": 20
+  },
+  {
+    "slug": "respect-vs-deference",
+    "title": "Respect vs Deference",
+    "subtitle": "Respect does not mean obedience.",
+    "file": "pieces/respect-vs-deference.md",
+    "type": "essay fragment",
+    "status": "published",
+    "date": "2026-05-26",
+    "tags": ["respect", "power", "boundaries", "kink"],
+    "contentWarnings": [],
+    "excerpt": "Respect does not mean deference. Respect is basic dignity, not servitude.",
+    "sort": 30
+  }
+]
