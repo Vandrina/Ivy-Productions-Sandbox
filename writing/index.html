@@ -1,149 +1,165 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#151316">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Writing | Ivy Productions</title>
-  <meta name="description" content="Writing archive for Ivy Productions.">
-  <link rel="stylesheet" href="../assets/css/site.css">
-  <link rel="stylesheet" href="../assets/css/writing.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivy — Writing</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/uncial-antiqua@5/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/pirata-one@5/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/im-fell-english@5/index.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/writing.css">
 </head>
-<body>
-  <div class="site-shell">
-    <header class="site-header">
-      <a class="brand" href="../index.html" aria-label="Ivy Productions home">
-        <span class="brand-title">Ivy Productions</span>
-        <span class="brand-subtitle">Writing · Creative Archive · Experiments</span>
-      </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="./">Writing</a>
-      </nav>
-    </header>
+<body data-screen-label="Writing — Archive" data-density="cozy" data-title-font="metamorphous" data-ornament="default">
 
-    <main>
-      <section class="writing-hero">
-        <p class="eyebrow">Writing Archive</p>
-        <h1>Fragments, reflections, and sharpened little truths.</h1>
-        <p>This is the temporary public archive while the larger site grows around it. Pieces are listed from a JSON manifest and opened through a single reusable reading page.</p>
-      </section>
-
-      <section class="archive-tools" aria-label="Archive tools">
-        <div class="archive-filters" id="archiveFilters">
-          <button class="filter-btn active" data-filter="all">All</button>
-        </div>
-        <div class="archive-count" id="archiveCount">Loading pieces...</div>
-      </section>
-
-      <section class="writing-grid" id="writingGrid" aria-live="polite"></section>
-      <div class="empty-state" id="emptyState" hidden>No pieces match that filter.</div>
-    </main>
-
-    <footer class="site-footer">
-      <span>© Ivy Productions</span>
-      <span class="footer-dot">·</span>
+<nav class="mainnav" aria-label="Ivy main">
+  <div class="mainnav-inner">
+    <a class="brand-wordmark" href="../index.html" aria-label="Ivy — home">
+      Ivy
+      <span class="est">Est. MMXVIII</span>
+    </a>
+    <div class="mainnav-links">
       <a href="../index.html">Home</a>
-    </footer>
+      <a href="index.html" class="current">Writing</a>
+    </div>
+  </div>
+</nav>
+
+<nav class="subnav" aria-label="Writing">
+  <a class="brand" href="../index.html" aria-label="Return to Ivy main site">
+    <span>Ivy</span>
+    <span class="sep">/</span>
+    <span class="here">Writing</span>
+  </a>
+  <div class="nav">
+    <a href="index.html" class="current">Archive</a>
+  </div>
+</nav>
+
+<div class="page">
+<div class="col">
+
+  <div class="writing-masthead">
+    <div class="eyebrow">Literary Practice</div>
+    <h1 class="display" style="margin-top:18px;">Writing</h1>
+    <p class="dek">Essays, short fiction, and shorter strangeness — a working archive.</p>
   </div>
 
-  <script>
-    (function () {
-      'use strict';
+  <div class="filter-row" id="archiveFilters">
+    <span class="filter-label">Filter</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+  </div>
 
-      var manifest = [];
-      var activeFilter = 'all';
-      var grid = document.getElementById('writingGrid');
-      var filters = document.getElementById('archiveFilters');
-      var count = document.getElementById('archiveCount');
-      var emptyState = document.getElementById('emptyState');
+  <div class="archive-count" id="archiveCount">Loading pieces...</div>
+  <section class="archive-list" id="writingGrid" aria-live="polite"></section>
+  <div class="empty-state" id="emptyState" hidden>No pieces match that filter.</div>
 
-      fetch('../data/writing-manifest.json')
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(function (data) {
-          manifest = data
-            .filter(function (item) { return item.status === 'published'; })
-            .sort(function (a, b) {
-              var sortDiff = (a.sort || 999) - (b.sort || 999);
-              if (sortDiff !== 0) return sortDiff;
-              return (b.date || '').localeCompare(a.date || '');
-            });
+  <div class="footer-line">Ivy · Writing Archive</div>
 
-          buildFilters(manifest);
-          renderArchive();
-        })
-        .catch(function (err) {
-          console.error('Writing manifest failed:', err);
-          count.textContent = 'Could not load pieces.';
+</div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var manifest = [];
+  var activeFilter = 'all';
+  var grid = document.getElementById('writingGrid');
+  var filters = document.getElementById('archiveFilters');
+  var count = document.getElementById('archiveCount');
+  var emptyState = document.getElementById('emptyState');
+
+  fetch('../data/writing-manifest.json')
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      manifest = data
+        .filter(function (item) { return item.status === 'published'; })
+        .sort(function (a, b) {
+          var sortDiff = (a.sort || 999) - (b.sort || 999);
+          if (sortDiff !== 0) return sortDiff;
+          return (b.date || '').localeCompare(a.date || '');
         });
 
-      function buildFilters(items) {
-        var types = Array.from(new Set(items.map(function (item) { return item.type; }).filter(Boolean)));
+      buildFilters(manifest);
+      renderArchive();
+    })
+    .catch(function (err) {
+      console.error('Writing manifest failed:', err);
+      count.textContent = 'Could not load pieces.';
+    });
 
-        types.forEach(function (type) {
-          var button = document.createElement('button');
-          button.className = 'filter-btn';
-          button.dataset.filter = type;
-          button.textContent = formatLabel(type);
-          filters.appendChild(button);
-        });
+  function buildFilters(items) {
+    var types = Array.from(new Set(items.map(function (item) { return item.type; }).filter(Boolean)));
 
-        filters.addEventListener('click', function (event) {
-          var button = event.target.closest('.filter-btn');
-          if (!button) return;
-          activeFilter = button.dataset.filter;
-          filters.querySelectorAll('.filter-btn').forEach(function (btn) {
-            btn.classList.toggle('active', btn === button);
-          });
-          renderArchive();
-        });
-      }
+    types.forEach(function (type) {
+      var button = document.createElement('button');
+      button.className = 'filter-btn';
+      button.dataset.filter = type;
+      button.textContent = formatLabel(type);
+      filters.appendChild(button);
+    });
 
-      function renderArchive() {
-        var visible = activeFilter === 'all'
-          ? manifest
-          : manifest.filter(function (item) { return item.type === activeFilter; });
+    filters.addEventListener('click', function (event) {
+      var button = event.target.closest('.filter-btn');
+      if (!button) return;
+      activeFilter = button.dataset.filter;
+      filters.querySelectorAll('.filter-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn === button);
+      });
+      renderArchive();
+    });
+  }
 
-        grid.innerHTML = '';
-        visible.forEach(function (item) {
-          var card = document.createElement('article');
-          card.className = 'writing-card';
-          card.innerHTML =
-            '<a class="writing-card-link" href="piece.html?piece=' + encodeURIComponent(item.slug) + '">' +
-              '<div class="writing-card-type">' + escapeHtml(item.type || '') + '</div>' +
-              '<h2>' + escapeHtml(item.title || '') + '</h2>' +
-              '<p>' + escapeHtml(item.excerpt || '') + '</p>' +
-              '<div class="writing-card-meta">' + escapeHtml(formatDate(item.date)) + '</div>' +
-            '</a>';
-          grid.appendChild(card);
-        });
+  function renderArchive() {
+    var visible = activeFilter === 'all'
+      ? manifest
+      : manifest.filter(function (item) { return item.type === activeFilter; });
 
-        count.textContent = visible.length + ' of ' + manifest.length + ' pieces';
-        emptyState.hidden = visible.length !== 0;
-      }
+    grid.innerHTML = '';
+    visible.forEach(function (item) {
+      var card = document.createElement('a');
+      card.className = 'entry-card';
+      card.href = 'piece.html?piece=' + encodeURIComponent(item.slug);
+      card.innerHTML =
+        '<div class="entry-meta">' +
+          '<span>' + escapeHtml(item.type || '') + '</span>' +
+          (item.date ? '<span>' + escapeHtml(formatDate(item.date)) + '</span>' : '') +
+        '</div>' +
+        '<h2 class="entry-title">' + escapeHtml(item.title || '') + '</h2>' +
+        '<p class="entry-excerpt">' + escapeHtml(item.excerpt || '') + '</p>' +
+        (item.tags && item.tags.length ? '<div class="entry-tags">' + escapeHtml(item.tags.join(' · ')) + '</div>' : '');
+      grid.appendChild(card);
+    });
 
-      function formatDate(dateString) {
-        if (!dateString) return '';
-        var date = new Date(dateString + 'T00:00:00');
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      }
+    count.textContent = visible.length + ' of ' + manifest.length + ' pieces';
+    emptyState.hidden = visible.length !== 0;
+  }
 
-      function formatLabel(value) {
-        return String(value).split('-').map(function (word) {
-          return word.charAt(0).toUpperCase() + word.slice(1);
-        }).join(' ');
-      }
+  function formatDate(dateString) {
+    if (!dateString) return '';
+    var date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
 
-      function escapeHtml(value) {
-        return String(value || '')
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#039;');
-      }
-    })();
-  </script>
+  function formatLabel(value) {
+    return String(value).split('-').map(function (word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+})();
+</script>
 </body>
 </html>
