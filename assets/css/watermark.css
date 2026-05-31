@@ -1,0 +1,35 @@
+.writing-watermark {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: none;
+  height: auto;
+  opacity: .055;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body[data-screen-label="Ivy — Home"] .writing-watermark {
+  top: 82px;
+}
+
+body[data-screen-label="Writing — Archive"] .writing-watermark,
+body[data-screen-label="Writing — Piece"] .writing-watermark {
+  top: 168px;
+}
+
+@media (max-width: 700px) {
+  .writing-watermark {
+    width: 128vw;
+  }
+
+  body[data-screen-label="Ivy — Home"] .writing-watermark {
+    top: 92px;
+  }
+
+  body[data-screen-label="Writing — Archive"] .writing-watermark,
+  body[data-screen-label="Writing — Piece"] .writing-watermark {
+    top: 150px;
+  }
+}
