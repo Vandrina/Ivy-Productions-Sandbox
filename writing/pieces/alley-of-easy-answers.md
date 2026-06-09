@@ -1,10 +1,4 @@
----
-date: "2025-08-29T11:53:22-07:00"
-draft: false
-title: "The Alley of Easy Answers"
-featured_image: "social-psychology.png"
-Summary: "The city never sleeps, it just trades shadows. Neon signs buzz over cracked sidewalks, each one promising salvation for the right price. Step into the smoke-filled alleys of the digital bazaar and you’ll see it plain as day: vendors peddling psychology like it’s cheap whiskey, watered down and poured into chipped glasses. Everyone’s thirsty, and nobody asks what’s really in the bottle."
----
+
 
 ### Weaponized Social Media Psychology
 
