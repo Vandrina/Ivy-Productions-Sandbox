@@ -237,25 +237,18 @@
       card.innerHTML =
         '<div class="entry-meta">' +
           '<span class="format">' + escapeHtml(formatLabel(item.type || 'Writing')) + '</span>' +
-          (item.date ? '<span>' + escapeHtml(formatDate(item.date)) + '</span>' : '') +
+          (item.date ? '<span class="dot"></span><span>' + escapeHtml(formatCardDate(item.date)) + '</span>' : '') +
+          (item.tags && item.tags.length ? '<span class="dot"></span><span>' + escapeHtml(item.tags.join(' · ')) + '</span>' : '') +
           (item.wordCount ? '<span class="dot"></span><span>~ ' + escapeHtml(item.wordCount) + ' words</span>' : '') +
           (item.readingTime ? '<span class="dot"></span><span>~ ' + escapeHtml(item.readingTime) + ' min</span>' : '') +
         '</div>' +
         '<h2 class="entry-title">' + escapeHtml(item.title || '') + '</h2>' +
-        '<p class="entry-excerpt">' + escapeHtml(item.excerpt || '') + '</p>' +
-        renderTags(item.tags || []);
+        '<p class="entry-excerpt">' + escapeHtml(item.excerpt || '') + '</p>';
       grid.appendChild(card);
     });
 
     count.textContent = visible.length + ' of ' + manifest.length + ' pieces';
     emptyState.hidden = visible.length !== 0;
-  }
-
-  function renderTags(tags) {
-    if (!tags.length) return '';
-    return '<div class="entry-tags">' + tags.map(function (tag) {
-      return '<span class="entry-tag">' + escapeHtml(tag) + '</span>';
-    }).join('') + '</div>';
   }
 
   function sortEntries(a, b) {
@@ -284,10 +277,11 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
-  function formatDate(dateString) {
+  function formatCardDate(dateString) {
     if (!dateString) return '';
-    var date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    var parts = dateString.split('-');
+    if (parts.length !== 3) return dateString;
+    return parts[0] + ' · ' + parts[1] + ' · ' + parts[2];
   }
 
   function formatLabel(value) {
