@@ -67,17 +67,16 @@
 
   <div class="section-eyebrow">From the Writing —</div>
 
-  <a class="featured-link" href="writing/index.html">
+  <a class="featured-link" id="latestWritingLink" href="writing/index.html">
     <div class="card">
       <span class="corner-bl"></span><span class="corner-br"></span>
-      <div class="card-body">
-        <div class="meta-row">
-          <span>Essay</span><span class="dot"></span>
-          <span>2026 · iv · xii</span><span class="dot"></span>
-          <span>#craft · #devotion</span>
+      <div class="card-body" id="latestWritingCard">
+        <div class="meta-stack">
+          <span>Writing</span>
+          <span>Loading latest entry...</span>
         </div>
-        <h2>[ Latest piece title — hooks into the manifest's most-recent entry. ]</h2>
-        <p>An italic preview line, two clauses long, the kind that earns the click without giving away the turn. Replace at build time from your manifest's excerpt field.</p>
+        <h2>From the archive</h2>
+        <p>The latest published piece will appear here from the writing manifest.</p>
         <div class="return right">Read</div>
       </div>
     </div>
@@ -98,5 +97,69 @@
 </div>
 </div>
 
+<script>
+(function () {
+  'use strict';
+
+  var latestLink = document.getElementById('latestWritingLink');
+  var latestCard = document.getElementById('latestWritingCard');
+
+  fetch('writing/data/writing-manifest.json')
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (items) {
+      var latest = items
+        .filter(function (item) { return item.status === 'published'; })
+        .sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); })[0];
+
+      if (!latest) return;
+
+      latestLink.href = 'writing/piece.html?piece=' + encodeURIComponent(latest.slug);
+      latestCard.innerHTML =
+        '<div class="featured-card-head">' +
+          '<div class="meta-stack">' +
+            '<span>' + escapeHtml(formatLabel(latest.type || 'Writing')) + '</span>' +
+            (latest.date ? '<span>' + escapeHtml(formatDate(latest.date)) + '</span>' : '') +
+          '</div>' +
+          renderTags(latest.tags || []) +
+        '</div>' +
+        '<h2>' + escapeHtml(latest.title || '') + '</h2>' +
+        '<p>' + escapeHtml(latest.excerpt || '') + '</p>' +
+        '<div class="return right">Read</div>';
+    })
+    .catch(function (err) {
+      console.error('Latest writing failed:', err);
+    });
+
+  function renderTags(tags) {
+    if (!tags.length) return '';
+    return '<div class="featured-tags">' + tags.map(function (tag) {
+      return '<span>' + escapeHtml(tag) + '</span>';
+    }).join('') + '</div>';
+  }
+
+  function formatDate(dateString) {
+    var date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function formatLabel(value) {
+    return String(value).split('-').map(function (word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+})();
+</script>
 </body>
 </html>
