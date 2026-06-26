@@ -194,11 +194,6 @@
   function renderRelatedLinks(item) {
     relatedCards.innerHTML = '';
 
-    var archive = document.createElement('a');
-    archive.className = 'related-card';
-    archive.href = 'index.html';
-    archive.innerHTML = '<div class="related-section">Archive</div><div class="related-title">See full archive</div>';
-    relatedCards.appendChild(archive);
 
     if (item.tags && item.tags.length) {
       var firstTag = item.tags[0];
