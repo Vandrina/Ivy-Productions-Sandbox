@@ -204,3 +204,36 @@ body .related-tag::before { content:none; }
   body[data-screen-label="Writing — Piece"] .writing-watermark { top:150px; }
 }
 @media (max-width:540px) { .doors { grid-template-columns:1fr; } }
+
+
+/* // BlueSky // */
+.bsky {
+  margin:40px 0 48px;
+  border:1px solid var(--border-soft);
+  background:var(--bg-deep);
+  padding:24px 22px;
+}
+.bsky h3,
+.vault-card h2 {
+  font-family:var(--display);
+  font-weight:normal;
+  color:var(--ink-bright);
+  letter-spacing:.015em;
+}
+.bsky h3 { font-size:22px; margin-bottom:14px; text-align:center; }
+.bsky-stub {
+  border:1px dashed var(--border);
+  padding:18px;
+  text-align:center;
+  color:var(--body-soft);
+}
+.bsky-stub strong {
+  display:block;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.22em;
+  color:var(--gold-dim);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.bsky-stub p { font-size:13px; color:var(--body-soft); }
